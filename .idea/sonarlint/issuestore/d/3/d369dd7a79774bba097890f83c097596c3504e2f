@@ -1,0 +1,19 @@
+
+d
+java:S3008"NRename this field "AND" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê„
+c
+java:S3008"MRename this field "OR" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹è†Œ
+d
+java:S3008"NRename this field "NOT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨Þ¥Ÿ
+e
+java:S1104"OMake AND a static final constant or non-public and provide accessors if needed.(Ê„
+d
+java:S1104"NMake OR a static final constant or non-public and provide accessors if needed.(¹è†Œ
+e
+java:S1104"OMake NOT a static final constant or non-public and provide accessors if needed.(¨Þ¥Ÿ
+?
+java:S1444")Make this "public static AND" field final(Ê„
+>
+java:S1444"(Make this "public static OR" field final(¹è†Œ
+?
+java:S1444")Make this "public static NOT" field final(¨Þ¥Ÿ

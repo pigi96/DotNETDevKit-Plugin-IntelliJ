@@ -1,0 +1,37 @@
+
+m
+java:S3008"PRename this field "EQUAL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ÿ…Á8ªƒ²Â³1
+v
+java:S3008"TRename this field "NOT_EQUAL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ğ×åîÿÿÿÿÿ8ÄÁ²Â³1
+t
+java:S3008"WRename this field "GREATER_THAN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ËúÍ8»´Â³1
+q
+java:S3008"TRename this field "LESS_THAN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(©¤Ïº8õºµÂ³1
+}
+java:S3008"`Rename this field "GREATER_THAN_OR_EQUAL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.( ¥±ì8õºµÂ³1
+
+java:S3008	"]Rename this field "LESS_THAN_OR_EQUAL" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³§çÍúÿÿÿÿ8õºµÂ³1
+n
+java:S1104"QMake EQUAL a static final constant or non-public and provide accessors if needed.(¨ÿ…Á8¬ƒ²Â³1
+w
+java:S1104"UMake NOT_EQUAL a static final constant or non-public and provide accessors if needed.(Ğ×åîÿÿÿÿÿ8ÆÁ²Â³1
+u
+java:S1104"XMake GREATER_THAN a static final constant or non-public and provide accessors if needed.(ËúÍ8½´Â³1
+r
+java:S1104"UMake LESS_THAN a static final constant or non-public and provide accessors if needed.(©¤Ïº8÷ºµÂ³1
+~
+java:S1104"aMake GREATER_THAN_OR_EQUAL a static final constant or non-public and provide accessors if needed.( ¥±ì8÷ºµÂ³1
+€
+java:S1104	"^Make LESS_THAN_OR_EQUAL a static final constant or non-public and provide accessors if needed.(³§çÍúÿÿÿÿ8÷ºµÂ³1
+H
+java:S1444"+Make this "public static EQUAL" field final(¨ÿ…Á8¬ƒ²Â³1
+Q
+java:S1444"/Make this "public static NOT_EQUAL" field final(Ğ×åîÿÿÿÿÿ8ÇÁ²Â³1
+O
+java:S1444"2Make this "public static GREATER_THAN" field final(ËúÍ8½´Â³1
+L
+java:S1444"/Make this "public static LESS_THAN" field final(©¤Ïº8øºµÂ³1
+X
+java:S1444";Make this "public static GREATER_THAN_OR_EQUAL" field final( ¥±ì8øºµÂ³1
+Z
+java:S1444	"8Make this "public static LESS_THAN_OR_EQUAL" field final(³§çÍúÿÿÿÿ8øºµÂ³1

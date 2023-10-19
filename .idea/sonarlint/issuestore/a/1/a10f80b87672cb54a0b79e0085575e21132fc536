@@ -1,0 +1,11 @@
+
+Z
+java:S1124	"EReorder the modifiers to comply with the Java Language Specification.(“ø
+[
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(å’Ü
+B
+java:S3599",Use another way to initialize this instance.(å’Ü
+o
+java:S1171"YMove the contents of this initializer to a standard constructor or to field initializers.(å’Ü
+u
+java:S1192"SUse already-defined constant 'CODE_TEMPLATE' instead of duplicating its value here.(ÇéÕÿÿÿÿÿ8Ø‘ƒè³1
