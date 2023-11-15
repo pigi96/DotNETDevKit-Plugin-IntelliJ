@@ -1,9 +1,3 @@
 
 [
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ˆŠ“í
-[
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(å’Ü
-B
-java:S3599",Use another way to initialize this instance.(å’Ü
-o
-java:S1171"YMove the contents of this initializer to a standard constructor or to field initializers.(å’Ü
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(º¬Ì®

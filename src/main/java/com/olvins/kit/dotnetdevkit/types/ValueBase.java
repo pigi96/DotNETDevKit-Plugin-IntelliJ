@@ -33,4 +33,9 @@ public abstract class ValueBase {
     public static boolean validate(String value) {
         return VALUES.get(value) != null;
     }
+
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }

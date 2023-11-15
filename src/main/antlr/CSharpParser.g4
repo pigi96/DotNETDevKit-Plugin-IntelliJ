@@ -967,7 +967,7 @@ attribute_argument
 	: (identifier ':')? expression
 	;
 
-//B.3 Grammar extensions for unsafe code
+//B.3 Grammar extensions for unsafe block
 pointer_type
 	: (simple_type | class_type) (rank_specifier | '?')* '*'
 	| VOID '*'

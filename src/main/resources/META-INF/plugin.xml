@@ -14,7 +14,7 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Generate .net code.<br>
+    Generate .net block.<br>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -30,7 +30,7 @@
     <actions>
         <group id="DotNETDevKit.CodeBlocksAction" text="_DotNETDevKit" description="My plugin actions">
             <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="DotNETDevKit.CodeBlocksActions" class="com.olvins.kit.dotnetdevkit.actions.CodeBlocksAction" text="Generate C# Code" description="Generate a sample C# code"/>
+            <action id="DotNETDevKit.CodeBlocksActions" class="com.olvins.kit.dotnetdevkit.actions.CodeBlocksAction" text="Generate C# Code" description="Generate a sample C# block"/>
         </group>
     </actions>
 

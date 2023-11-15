@@ -1,51 +1,57 @@
 package validators;
 
-import com.olvins.kit.dotnetdevkit.blocks.controls.ConditionBlock;
-import com.olvins.kit.dotnetdevkit.errors.ConditionalException;
+import com.olvins.kit.dotnetdevkit.validators.Validators;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 public class ExpressionValidatorTest {
-    private final static String EXPRESSION_CORRECT = "Expression %s should be valid";
-    private final static String EXPRESSION_INCORRECT = "Expression %s should be invalid";
+    private final static String EXPRESSION_VALID_MESSAGE = "Expression %s should be valid";
+    private final static String EXPRESSION_INVALID_MESSAGE = "Expression %s should be invalid";
+
+    private final static String EXPRESSION_BASIC_VALID = "exp == 1";
+    private final static String EXPRESSION_SINGLE_BRACKETS_VALID = "(exp == 1)";
+    private final static String EXPRESSION_MULTIPLE_COMPLEX_VALID = "((exp == 1) && (exp == 2))";
+    private final static String EXPRESSION_MULTIPLE_BRACKETS_VALID = "((exp == 1))";
+    private final static String EXPRESSION_BASIC_INVALID = "exp == ";
+    private final static String EXPRESSION_BRACKETS_INVALID = "(exp == 1";
+    private final static String EXPRESSION_OPERATORS_INVALID = "exp %%% 1";
+    private final static String EXPRESSION_NESTED_BRACKETS_INVALID = "(exp == 1) && (exp";
 
     @Test
-    void validateExpression_CorrectExpression_ReturnsCode() {
-        String expression = "i == 3";
-        ConditionBlock conditionBlock = new ConditionBlock(expression);
-        String code = conditionBlock.value();
-        assertEquals(String.format(EXPRESSION_CORRECT, expression), code,  expression);
+    void validateExpression_BasicValid_ReturnsSuccess() {
+        ValidatorsUtils.validateValueSuccess(EXPRESSION_BASIC_VALID, EXPRESSION_VALID_MESSAGE, new Validators.ExpressionValidator());
     }
 
     @Test
-    void validateExpression_MismatchedParentheses_ThrowsException() {
-        String expression = "((i == 3)";
-        Exception exception = assertThrows(ConditionalException.class, () -> {
-            ConditionBlock conditionBlock = new ConditionBlock(expression);
-        });
-
-        assertEquals(String.format(EXPRESSION_INCORRECT, expression), ConditionalException.class, exception.getClass());
+    void validateExpression_SingleBracketsValid_ReturnsSuccess() {
+        ValidatorsUtils.validateValueSuccess(EXPRESSION_SINGLE_BRACKETS_VALID, EXPRESSION_VALID_MESSAGE, new Validators.ExpressionValidator());
     }
 
     @Test
-    void validateExpression_InvalidOperators_ThrowsException() {
-        String expression = "i %% 3";
-        Exception exception = assertThrows(ConditionalException.class, () -> {
-            ConditionBlock conditionBlock = new ConditionBlock(expression);
-        });
-
-        assertEquals(String.format(EXPRESSION_INCORRECT, expression), ConditionalException.class, exception.getClass());
+    void validateExpression_MultipleComplexValid_ReturnsSuccess() {
+        ValidatorsUtils.validateValueSuccess(EXPRESSION_MULTIPLE_COMPLEX_VALID, EXPRESSION_VALID_MESSAGE, new Validators.ExpressionValidator());
     }
 
     @Test
-    void validateExpression_InvalidNestedConditions_ThrowsException() {
-        String expression = "(i == 3) && (i";
-        Exception exception = assertThrows(ConditionalException.class, () -> {
-            ConditionBlock conditionBlock = new ConditionBlock(expression);
-        });
+    void validateExpression_MultipleBracketsValid_ReturnsSuccess() {
+        ValidatorsUtils.validateValueSuccess(EXPRESSION_MULTIPLE_BRACKETS_VALID, EXPRESSION_VALID_MESSAGE, new Validators.ExpressionValidator());
+    }
 
-        assertEquals(String.format(EXPRESSION_INCORRECT, expression), ConditionalException.class, exception.getClass());
+    @Test
+    void validateExpression_BasicInvalid_ThrowsException() {
+        ValidatorsUtils.validateValueFailure(EXPRESSION_BASIC_INVALID, EXPRESSION_INVALID_MESSAGE, new Validators.ExpressionValidator());
+    }
+
+    @Test
+    void validateExpression_BracketsInvalid_ThrowsException() {
+        ValidatorsUtils.validateValueFailure(EXPRESSION_BRACKETS_INVALID, EXPRESSION_INVALID_MESSAGE, new Validators.ExpressionValidator());
+    }
+    @Test
+    void validateExpression_OperationsInvalid_ThrowsException() {
+        ValidatorsUtils.validateValueFailure(EXPRESSION_OPERATORS_INVALID, EXPRESSION_INVALID_MESSAGE, new Validators.ExpressionValidator());
+    }
+
+    @Test
+    void validateExpression_NestedBracketsInvalid_ThrowsException() {
+        ValidatorsUtils.validateValueFailure(EXPRESSION_NESTED_BRACKETS_INVALID, EXPRESSION_INVALID_MESSAGE, new Validators.ExpressionValidator());
     }
 }
