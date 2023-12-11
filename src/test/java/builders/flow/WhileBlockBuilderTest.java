@@ -1,11 +1,8 @@
 package builders.flow;
 
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
-import com.olvins.kit.dotnetdevkit.blocks.controls.components.ConditionBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlockBuilder;
+import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.WhileBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.WhileBlockBuilder;
 import org.junit.jupiter.api.Test;
 import utils.BlockTestUtils;
 import utils.JustUtils;
@@ -21,14 +18,14 @@ public class WhileBlockBuilderTest {
         ConditionBlock conditionBlock = BlockTestUtils.mockConditionBlock(SyntaxConstants.VALID_CONDITION);
         List<Block> blocks = BlockTestUtils.mockBlocks(SyntaxConstants.VALID_STRING_DECLARATION);
 
-        String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.value(), JustUtils.collectBlocks(blocks));
+        String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
         WhileBlock whileBlock = WhileBlockBuilder.start()
                 .withCondition(conditionBlock)
                 .withBlocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, whileBlock.value());
+        assertEquals(expectedResult, whileBlock.generate());
     }
 
     @Test
@@ -36,13 +33,13 @@ public class WhileBlockBuilderTest {
         ConditionBlock conditionBlock = BlockTestUtils.mockConditionBlock(SyntaxConstants.VALID_CONDITION);
         List<Block> blocks = BlockTestUtils.mockBlocks(SyntaxConstants.VALID_STRING_DECLARATION, SyntaxConstants.VALID_INT_DECLARATION);
 
-        String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.value(), JustUtils.collectBlocks(blocks));
+        String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
         WhileBlock whileBlock = WhileBlockBuilder.start()
                 .withCondition(conditionBlock)
                 .withBlocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, whileBlock.value());
+        assertEquals(expectedResult, whileBlock.generate());
     }
 }

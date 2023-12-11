@@ -1,6 +1,6 @@
 package validators;
 
-import com.olvins.kit.dotnetdevkit.validators.Validators;
+import com.olvins.kit.dotnetdevkit.utils.Validators;
 import org.junit.jupiter.api.Test;
 
 public class ExpressionValidatorTest {

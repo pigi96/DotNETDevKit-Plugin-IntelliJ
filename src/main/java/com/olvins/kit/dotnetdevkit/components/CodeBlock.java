@@ -1,5 +1,7 @@
 package com.olvins.kit.dotnetdevkit.components;
 
+import com.olvins.kit.dotnetdevkit.blocks.controls.flow.ForBlock;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

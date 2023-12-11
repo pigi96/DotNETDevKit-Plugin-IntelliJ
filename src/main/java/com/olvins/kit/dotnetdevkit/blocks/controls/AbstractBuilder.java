@@ -6,8 +6,6 @@ import java.util.Map;
 public abstract class AbstractBuilder<T extends Block> {
     protected final Map<String, Object> fields = new HashMap<>();
 
-    protected AbstractBuilder() {}
-
     protected void setField(String field, Object value) {
         fields.put(field, value);
     }

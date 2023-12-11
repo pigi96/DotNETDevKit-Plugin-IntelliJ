@@ -2,10 +2,13 @@ package com.olvins.kit.dotnetdevkit.blocks.controls;
 
 import com.olvins.kit.dotnetdevkit.errors.ConditionalException;
 import com.olvins.kit.dotnetdevkit.types.BlockType;
-import com.olvins.kit.dotnetdevkit.validators.IValidator;
+import com.olvins.kit.dotnetdevkit.types.FormatStyle;
+import com.olvins.kit.dotnetdevkit.utils.Formatters;
+import com.olvins.kit.dotnetdevkit.utils.IFormatter;
+import com.olvins.kit.dotnetdevkit.utils.IValidator;
+import com.olvins.kit.dotnetdevkit.utils.ListBlock;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,11 +16,15 @@ import java.util.stream.Collectors;
  * Main code class that is contained as coding block, used for generation of code,
  * deep stacking code, and TBD
  */
-public class Block {
+public abstract class Block {
     protected String template;
+    protected String generatedCode;
     protected HashMap<String, Object> index;
     protected BlockType blockType;
     protected IValidator validator;
+    protected int depth;
+
+    private static FormatStyle formatStyle = FormatStyle.StandaloneBrace; // Can only be set for all code at once, this way different styles cannot be used in the same code generation
 
     public Block(String template, BlockType blockType, IValidator validator, Object... objects) {
         this.template = template;
@@ -27,19 +34,20 @@ public class Block {
         modifyTemplate(objects);
     }
 
-    public String value() {
+    public String generate() {
         String generatedCode = template;
         for (Map.Entry<String, Object> entry : index.entrySet()) {
             String placeholder = entry.getKey();
             Object value = entry.getValue();
-            if (value instanceof List) {
-                String innerBlocks = ((List<Block>) value).stream()
-                        .map(Block::value)
-                        .collect(Collectors.joining("\n\t"));
+            if (value instanceof ListBlock) {
+                ListBlock list = (ListBlock) value;
+                String innerBlocks = list.getList().stream()
+                        .map(Block::getGeneratedCode)
+                        .collect(Collectors.joining(list.getSeparator()));
                 generatedCode = generatedCode.replace(placeholder, innerBlocks);
             } else if (value instanceof Block) {
                 Block block = (Block) value;
-                generatedCode = generatedCode.replace(placeholder, block.value());
+                generatedCode = generatedCode.replace(placeholder, block.generate());
             } else {
                 generatedCode = generatedCode.replace(placeholder, value.toString());
             }
@@ -49,6 +57,22 @@ public class Block {
             validator.validate(generatedCode);
         }
 
+        this.generatedCode = generatedCode;
+        return generatedCode;
+    }
+
+    public String getGeneratedCode() {
+        generate();
+        return generatedCode;
+    }
+
+    public String getGeneratedFormattedCode() {
+        generate();
+        formatCode();
+        return generatedCode;
+    }
+
+    public String getCode() {
         return generatedCode;
     }
 
@@ -60,9 +84,9 @@ public class Block {
         index = new HashMap<>();
 
         for (Object block : objects) {
-            if (block instanceof List) {
-                List<Block> innerBlocks = (List<Block>) block;
-                index.put(BlockType.BLOCK.getValue(), innerBlocks);
+            if (block instanceof ListBlock) {
+                ListBlock innerBlocks = (ListBlock) block;
+                index.put(innerBlocks.getBlockType().getValue(), innerBlocks);
             } else if (block instanceof Block) {
                 Block blockBlock = (Block) block;
                 index.put(blockBlock.getBlockType().getValue(), blockBlock);
@@ -71,5 +95,33 @@ public class Block {
                 index.put(BlockType.STRING_BLOCK.getValue(), stringBlock);
             }
         }
+    }
+
+    public void formatCode() {
+        formatCode(this.formatStyle);
+    }
+
+    public void formatCode(FormatStyle formatStyle) {
+        IFormatter formatter;
+        switch (formatStyle) {
+            case EndOfLineBrace:
+                formatter = new Formatters.EndOfLineBraceFormat();
+                break;
+            case StandaloneBrace:
+                formatter = new Formatters.StandaloneBraceFormat();
+                break;
+            default:
+                formatter = new Formatters.StandaloneBraceFormat();
+        }
+
+        if (generatedCode == null) {
+            throw new IllegalStateException("Code formatting can only be called after code has been generated");
+        }
+
+        this.generatedCode = formatter.format(this.generatedCode);
+    }
+
+    public static void setFormatStyle(FormatStyle formatStyleNew) {
+        formatStyle = formatStyleNew;
     }
 }

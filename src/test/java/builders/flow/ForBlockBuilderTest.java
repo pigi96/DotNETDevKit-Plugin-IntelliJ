@@ -1,13 +1,10 @@
 package builders.flow;
 
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
-import com.olvins.kit.dotnetdevkit.blocks.controls.components.ConditionBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.components.InitializationBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.components.IterationBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.InitializationBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.IterationBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.ForBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.ForBlockBuilder;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlockBuilder;
 import org.junit.jupiter.api.Test;
 import utils.BlockTestUtils;
 import utils.JustUtils;
@@ -25,7 +22,7 @@ public class ForBlockBuilderTest {
         IterationBlock iterationBlock = BlockTestUtils.mockIterationBlock(SyntaxConstants.VALID_INT_ITERATION);
         List<Block> blocks = BlockTestUtils.mockBlocks(SyntaxConstants.VALID_STRING_DECLARATION);
 
-        String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.value(), conditionBlock.value(), iterationBlock.value(), JustUtils.collectBlocks(blocks));
+        String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.generate(), conditionBlock.generate(), iterationBlock.generate(), JustUtils.collectBlocks(blocks));
 
         ForBlock forBlock = ForBlockBuilder.start()
                 .withInitialization(initializationBlock)
@@ -34,7 +31,7 @@ public class ForBlockBuilderTest {
                 .withBlocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, forBlock.value());
+        assertEquals(expectedResult, forBlock.getGeneratedFormattedCode());
     }
 
     @Test
@@ -44,7 +41,7 @@ public class ForBlockBuilderTest {
         IterationBlock iterationBlock = BlockTestUtils.mockIterationBlock(SyntaxConstants.VALID_INT_ITERATION);
         List<Block> blocks = BlockTestUtils.mockBlocks(SyntaxConstants.VALID_STRING_DECLARATION, SyntaxConstants.VALID_INT_DECLARATION);
 
-        String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.value(), conditionBlock.value(), iterationBlock.value(), JustUtils.collectBlocks(blocks));
+        String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.generate(), conditionBlock.generate(), iterationBlock.generate(), JustUtils.collectBlocks(blocks));
 
         ForBlock forBlock = ForBlockBuilder.start()
                 .withInitialization(initializationBlock)
@@ -53,6 +50,6 @@ public class ForBlockBuilderTest {
                 .withBlocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, forBlock.value());
+        assertEquals(expectedResult, forBlock.generate());
     }
 }

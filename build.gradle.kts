@@ -12,12 +12,14 @@ repositories {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":Annotation-processor")))
+    annotationProcessor(project(":Annotation-processor"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
     testImplementation("org.junit.platform:junit-platform-launcher:1.10.0")
     testImplementation("org.mockito:mockito-core:5.6.0")
-    testImplementation("org.apache.velocity:velocity:1.7")
+    testImplementation("org.apache.velocity:velocity:1.8")
     implementation("org.antlr:antlr4:4.13.1")
 }
 
@@ -29,17 +31,6 @@ intellij {
 
     plugins.set(listOf(/* Plugin Dependencies */))
 }
-
-/*sourceSets {
-    main {
-        antlr {
-            setSrcDirs(listOf("src/main/antlr"))
-        }
-        java {
-            setSrcDirs(listOf("src/main/java", "build/generated-src/antlr/main"))
-        }
-    }
-}*/
 
 tasks {
     // Set the JVM compatibility versions
@@ -70,5 +61,5 @@ tasks {
     /*generateGrammarSource {
         maxHeapSize = "64m"
         arguments = arguments + listOf("-visitor", "-long-messages")
-    }*/ // Generate parsers for c sharp in java with visiors list and messages
+    }*/ // Generate parsers for c sharp in java with visitors list and messages
 }

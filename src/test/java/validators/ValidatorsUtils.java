@@ -1,6 +1,6 @@
 package validators;
 
-import com.olvins.kit.dotnetdevkit.validators.IValidator;
+import com.olvins.kit.dotnetdevkit.utils.IValidator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

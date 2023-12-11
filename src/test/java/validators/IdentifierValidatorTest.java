@@ -1,6 +1,6 @@
 package validators;
 
-import com.olvins.kit.dotnetdevkit.blocks.controls.IdentifierBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.IdentifierBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ public class IdentifierValidatorTest {
     void validateIdentifier_CorrectExpression_ReturnsCode() {
         String expression = "idt";
         IdentifierBlock conditionBlock = new IdentifierBlock(expression);
-        String code = conditionBlock.value();
+        String code = conditionBlock.generate();
         assertEquals(String.format(IDENTIFIER_VALID, expression), code,  expression);
     }
 
