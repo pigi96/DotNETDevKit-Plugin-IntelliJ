@@ -1,198 +1,185 @@
 package annotations;
 
-import com.google.auto.service.AutoService;
-import utils.SimpleGenericTypeNameVisitor;
-
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.tools.JavaFileObject;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-@AutoService(Processor.class)
-public class BlockBuilderProcessor extends AbstractProcessor {
-    private ProcessingEnvironment processingEnvironment;
-
+public class BlockBuilderProcessor extends BaseProcessor {
     private List<String> typeNames;
 
-    private Set<String> requiredImports = new HashSet<>();
+    private static final String BUILDER_PACKAGE_NAME = "com.olvins.kit";
+    private static final String BUILDER_IMPL_NAME = "Builder";
+    private static final String SIMPLE_BLOCK_INTERFACE = "com.olvins.kit.dotnetdevkit.blocks.controls.ISimpleBlock";
+    private static final String ABSTRACT_BLOCK_SUPERCLASS = "com.olvins.kit.dotnetdevkit.blocks.controls.Block";
 
-    @Override
-    public synchronized void init(ProcessingEnvironment processingEnvironment) {
-        super.init(processingEnvironment);
-        this.processingEnvironment = processingEnvironment;
+    public BlockBuilderProcessor(String className, ProcessingEnvironment processingEnvironment, Element element) {
+        super(className, BUILDER_PACKAGE_NAME, String.format("%s%s", className, BUILDER_IMPL_NAME), processingEnvironment, element);
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element element : roundEnv.getElementsAnnotatedWith(BlockBuilder.class)) {
-            if (element.getKind() == ElementKind.CLASS) {
-                typeNames = new ArrayList<>();
-                CodeBuilder builder = new CodeBuilder();
-                String packageName = ((TypeElement) element).getQualifiedName().toString();
-                String className = element.getSimpleName().toString();
-                String classNameBuilderImpl = className + "Builder";
-                builder.append("package com.olvins.kit;\n")
-                        .emptyLine()
-                        .append("import java.util.List;")
-                        .emptyLine()
-                        .append("/**")
-                        .append(" * Class has been generated with the use of @BlockBuilder annotation, for custom or more advanced")
-                        .append(" * usage please refer to extending the Block class yourself (in this case look at the")
-                        .append(" * generated classes and follow the pattern)")
-                        .append(" */")
-                        .append("public class " + classNameBuilderImpl + " extends AbstractBuilder<" + className + "> {")
-                        .append("\tprivate " + classNameBuilderImpl + "() {")
-                        .append("\t\t// Disabled access to class, can only be used through static methods")
-                        .append("\t}")
-                        .emptyLine()
-                        .append("\tpublic static " + classNameBuilderImpl + " start() {")
-                        .append("\t\treturn new " + classNameBuilderImpl + "();")
-                        .append("\t}")
-                        .emptyLine();
+    public boolean process() {
+        typeNames = new ArrayList<>();
+        String className = element.getSimpleName().toString();
+        String classNameBuilderImpl = className + "Builder";
 
-                processClass((TypeElement) element, builder, className, classNameBuilderImpl);
-                generateBuildOverride(builder, className);
+        addClassImports("List", "java.util.List", Type.GENERAL);
+        addClassImports("Map", "java.util.Map", Type.GENERAL);
+        addClassImports("LinkedHashMap", "java.util.LinkedHashMap", Type.GENERAL);
+        addClassImports("AbstractBuilder", "com.olvins.kit.dotnetdevkit.blocks.controls.AbstractBuilder", Type.GENERAL);
+        addClassImports(className, ((TypeElement) element).getQualifiedName().toString(), Type.GENERAL);
 
-                builder.append("}");
+        builder.append("public class %s extends AbstractBuilder<%s> {", classNameBuilderImpl, className)
+                .append("\tprivate %s() {", classNameBuilderImpl)
+                .append("\t\t// Disabled access to class, can only be used through static methods")
+                .append("\t}")
+                .emptyLine()
+                .append("\tpublic static %s start() {", classNameBuilderImpl)
+                .append("\t\treturn new %s();", classNameBuilderImpl)
+                .append("\t}")
+                .emptyLine();
 
-                addRequiredImports(builder, ((TypeElement) element).getQualifiedName().toString());
+        processClass((TypeElement) element, builder, className, classNameBuilderImpl);
+        builder.append(generateBuildOverride(className));
 
-                try {
-                    JavaFileObject builderFile = processingEnv.getFiler().createSourceFile("com.olvins.kit.dotnetdevkit.blocks." + classNameBuilderImpl);
+        builder.append("}");
 
-                    try (BufferedWriter writer = new BufferedWriter(builderFile.openWriter())) {
-                        writer.write(builder.generate());
-                    }
-                } catch (Exception ex) {
-                    // dont care for now
-                }
-            }
-        }
         return true;
     }
 
-    private void generateConstructors(CodeBuilder builder, String className, String classNameBuilderImpl, List<? extends VariableElement> parameters) {
-        // Basic fast builder constructor
-        CodeBuilder constructorParameters = CodeBuilder.quickBuilt(parameters.stream().map(parameter -> getSimpleTypeNameWithGenerics(parameter.asType()) + " " + parameter.getSimpleName().toString()).collect(Collectors.toList()));
+    private void processClass(TypeElement classElement, CodeBuilder builder, String className, String classNameBuilderImpl) {
+        for (Element enclosed : classElement.getEnclosedElements()) {
+            if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
+                processConstructor(builder, className, classNameBuilderImpl, enclosed);
+            }
+        }
+    }
 
-        builder.append("\tpublic static " + className + " create(" + constructorParameters.generateParams() + ") {")
-                .append("\t\treturn start()");
+    private void processConstructor(CodeBuilder builder, String className, String classNameBuilderImpl, Element enclosed) {
+        generateBaseConstructors(builder, className, ((ExecutableElement) enclosed).getParameters());
 
-        CodeBuilder builderParameters = CodeBuilder.quickBuilt(
-                parameters.stream().map(parameter -> "\t\t\t\t." + parameter.getSimpleName().toString() + "(" + parameter.getSimpleName().toString() + ")").collect(Collectors.toList())
-        );
+        for (VariableElement parameter : ((ExecutableElement) enclosed).getParameters()) {
+            builder.append(generateBuilderMethod(parameter, classNameBuilderImpl));
+        }
 
-        builder.append(builderParameters.generate())
-                .append("\t\t\t\t.build();")
-                .append("\t}")
-                .emptyLine();
+        builder.append(generateStaticJsonInput(builder, className, classNameBuilderImpl, ((ExecutableElement) enclosed).getParameters()));
+    }
+
+    private void generateBaseConstructors(CodeBuilder builder, String className, List<? extends VariableElement> parameters) {
+        builder.append(generateBasicConstructor(className, parameters));
 
         boolean constructorCanBeSimplified = false;
         List<ComplexConstructorVariable> variables = new ArrayList<>();
         // Simple constructor if it contains elements of the ISimpleBlock interface
         for (var parameter : parameters) {
-            String classNameToCheck = parameter.asType().toString();
-            TypeElement classTypeElement = processingEnvironment.getElementUtils().getTypeElement(classNameToCheck);
-            TypeElement interfaceTypeElement = processingEnvironment.getElementUtils().getTypeElement("com.olvins.kit.dotnetdevkit.blocks.controls.ISimpleBlock");
-
-            boolean implementsInterface = false;
-            TypeMirror typeMirror = parameter.asType();
-
-            if (typeMirror instanceof DeclaredType) {
-                DeclaredType declaredType = (DeclaredType) typeMirror;
-                Element element = declaredType.asElement();
-
-                try {
-                    if (element instanceof TypeElement) {
-                        for (TypeMirror implementedInterface : classTypeElement.getInterfaces()) {
-                            if (processingEnvironment.getTypeUtils().isSameType(implementedInterface, interfaceTypeElement.asType())) {
-                                implementsInterface = true;
-                                constructorCanBeSimplified = true;
-                                break;
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    // Ignore
-                }
-            }
-
-            if (implementsInterface) {
+            if (parameterCanBeSimplified(parameter)) {
+                constructorCanBeSimplified = true;
                 variables.add(new ComplexConstructorVariable("String", getSimpleTypeNameWithGenerics(parameter.asType()), parameter.getSimpleName().toString(), true));
             } else {
                 variables.add(new ComplexConstructorVariable(getSimpleTypeNameWithGenerics(parameter.asType()), parameter.getSimpleName().toString(), false));
             }
         }
 
-        // Basic fast builder constructor
         if (constructorCanBeSimplified) {
-            CodeBuilder simpleConstructorParameters = CodeBuilder.quickBuilt(
-                    variables.stream().map(ComplexConstructorVariable::getVariable).collect(Collectors.toList())
-            );
-
-            builder.append("\tpublic static " + className + " create(" + simpleConstructorParameters.generateParams() + ") {")
-                    .append("\t\treturn start()");
-
-            CodeBuilder complexConstructorInitializations = CodeBuilder.quickBuilt(
-                    variables.stream().map(variable -> "\t\t\t\t." + variable.builderComplexAddition()).collect(Collectors.toList())
-            );
-
-            builder.append(complexConstructorInitializations.generate())
-                    .append("\t\t\t\t.build();")
-                    .append("\t}");
+            builder.append(generateSimplifiedConstructor(className, variables)).emptyLine();
         }
     }
 
-    private void processClass(TypeElement classElement, CodeBuilder builder, String className, String classNameBuilderImpl) {
-        for (Element enclosed : classElement.getEnclosedElements()) {
-            if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
-                generateConstructors(builder, className, classNameBuilderImpl, ((ExecutableElement) enclosed).getParameters());
-                for (VariableElement parameter : ((ExecutableElement) enclosed).getParameters()) {
-                    generateBuilderMethod(parameter, builder, className, classNameBuilderImpl);
+    private CodeBuilder generateBasicConstructor(String className, List<? extends VariableElement> parameters) {
+        CodeBuilder code = new CodeBuilder();
+
+        CodeBuilder constructorParameters = CodeBuilder.quickBuilt(parameters.stream().map(parameter -> getSimpleTypeNameWithGenerics(parameter.asType()) + " " + parameter.getSimpleName().toString()).collect(Collectors.toList()));
+
+        code.append("\tpublic static %s create(%s) {", className, constructorParameters.generateParams())
+                .append("\t\treturn start()");
+
+        CodeBuilder builderParameters = CodeBuilder.quickBuilt(
+                parameters.stream().map(parameter -> String.format("\t\t\t\t.%s(%s)", parameter.getSimpleName().toString(), parameter.getSimpleName().toString())).collect(Collectors.toList())
+        );
+
+        code.append(builderParameters.generate())
+                .append("\t\t\t\t.build();")
+                .append("\t}")
+                .emptyLine();
+
+        return code;
+    }
+
+    private boolean parameterCanBeSimplified(VariableElement parameter) {
+        String classNameToCheck = parameter.asType().toString();
+        TypeElement classTypeElement = processingEnvironment.getElementUtils().getTypeElement(classNameToCheck);
+        TypeElement interfaceTypeElement = processingEnvironment.getElementUtils().getTypeElement(SIMPLE_BLOCK_INTERFACE);
+
+        TypeMirror typeMirror = parameter.asType();
+        if (typeMirror instanceof DeclaredType) {
+            DeclaredType declaredType = (DeclaredType) typeMirror;
+            Element element = declaredType.asElement();
+
+            try {
+                if (element instanceof TypeElement) {
+                    for (TypeMirror implementedInterface : classTypeElement.getInterfaces()) {
+                        if (processingEnvironment.getTypeUtils().isSameType(implementedInterface, interfaceTypeElement.asType())) {
+                            return true;
+                        }
+                    }
                 }
+            } catch (Exception ex) {
+                System.err.println(String.format("Simplification process failure: %s", ex));
             }
         }
+
+        return false;
     }
 
-    private void generateBuilderMethod(VariableElement parameter, CodeBuilder builder, String className, String classNameBuilderImpl) {
+    private CodeBuilder generateSimplifiedConstructor(String className, List<ComplexConstructorVariable> variables) {
+        CodeBuilder code = new CodeBuilder();
+
+        CodeBuilder simpleConstructorParameters = CodeBuilder.quickBuilt(
+                variables.stream().map(ComplexConstructorVariable::getVariable).collect(Collectors.toList())
+        );
+
+        code.append("\tpublic static %s create(%s) {", className, simpleConstructorParameters.generateParams())
+                .append("\t\treturn start()");
+
+        CodeBuilder complexConstructorInitializations = CodeBuilder.quickBuilt(
+                variables.stream().map(variable -> "\t\t\t\t." + variable.builderComplexAddition()).collect(Collectors.toList())
+        );
+
+        code.append(complexConstructorInitializations.generate())
+                .append("\t\t\t\t.build();")
+                .append("\t}");
+
+        return code;
+    }
+
+    private CodeBuilder generateBuilderMethod(VariableElement parameter, String classNameBuilderImpl) {
+        CodeBuilder code = new CodeBuilder();
         String typeName = getSimpleTypeNameWithGenerics(parameter.asType());
         typeNames.add(typeName);
-        builder.append("\tpublic " + classNameBuilderImpl + " " + parameter.getSimpleName() + "(" + typeName + " " + parameter.getSimpleName() + ") {")
+        code.append("\tpublic " + classNameBuilderImpl + " " + parameter.getSimpleName() + "(" + typeName + " " + parameter.getSimpleName() + ") {")
                 .append("\t\tsetField(\"" + typeName + "\", " + parameter.getSimpleName() + ");")
                 .append("\t\treturn this;")
                 .append("\t}")
                 .emptyLine();
+
+        return code;
     }
 
-    private void generateBuildOverride(CodeBuilder builder, String className) {
+    private CodeBuilder generateBuildOverride(String className) {
+        CodeBuilder code = new CodeBuilder();
+
         CodeBuilder validatorParameters = CodeBuilder.quickBuilt(
                 typeNames.stream().map(typeName -> "\"" + typeName + "\"").collect(Collectors.toList())
         );
 
-        builder.append("\t@Override")
+        code.append("\t@Override")
                 .append("\tpublic " + className + " build() {")
                 .append("\t\tvalidate(" + validatorParameters.generateParams() + ");")
                 .append("\t\treturn new " + className + "(");
@@ -201,80 +188,47 @@ public class BlockBuilderProcessor extends AbstractProcessor {
                 typeNames.stream().map(typeName -> "\t\t\t\t(" + typeName + ") fields.get(\"" + typeName + "\")").collect(Collectors.toList())
         );
 
-        builder.append(constructorParameters.generateLineParams());
+        code.append(constructorParameters.generateLineParams());
 
-        builder.append("\t\t);")
+        code.append("\t\t);")
                 .append("\t}");
+
+        return code;
     }
 
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        return Set.of(BlockBuilder.class.getName());
-    }
+    private CodeBuilder generateStaticJsonInput(CodeBuilder builder, String className, String classNameBuilderImpl, List<? extends VariableElement> parameters) {
+        CodeBuilder code = new CodeBuilder();
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
-    }
-
-    private String getSimpleTypeNameWithGenerics(TypeMirror typeMirror) {
-        String fullTypeName = typeMirror.toString();
-        return removePackageNames(fullTypeName);
-    }
-
-    private String removePackageNames(String fullTypeName) {
-        if (!fullTypeName.contains("<")) {
-            requiredImports.add(fullTypeName); // TODO - fix for more complex operations
-        }
-        StringBuilder result = new StringBuilder();
-        int start = 0;
-        int bracketDepth = 0;
-
-        for (int i = 0; i < fullTypeName.length(); i++) {
-            char ch = fullTypeName.charAt(i);
-
-            if (ch == '<') {
-                bracketDepth++;
-                if (bracketDepth == 1) {
-                    result.append(extractSimpleName(fullTypeName.substring(start, i))).append(ch);
-                    start = i + 1;
-                }
-            } else if (ch == '>') {
-                bracketDepth--;
-                if (bracketDepth == 0) {
-                    result.append(removePackageNames(fullTypeName.substring(start, i))).append(ch);
-                    start = i + 1;
-                }
-            } else if (ch == ',' && bracketDepth == 1) {
-                result.append(removePackageNames(fullTypeName.substring(start, i))).append(", ");
-                start = i + 2;
-            }
-        }
-
-        if (start < fullTypeName.length()) {
-            result.append(extractSimpleName(fullTypeName.substring(start)));
-        }
-
-        return result.toString();
-    }
-
-    private String extractSimpleName(String typeName) {
-        int lastDotIndex = typeName.lastIndexOf('.');
-        return (lastDotIndex == -1) ? typeName : typeName.substring(lastDotIndex + 1);
-    }
-
-    private void addRequiredImports(CodeBuilder builder, String classImport) {
-        CodeBuilder importsBuilder = CodeBuilder.quickBuilt(requiredImports.stream().map(value -> "import " + value + ";").collect(Collectors.toList()));
-        importsBuilder.add(0, Arrays.asList(
-                "import com.olvins.kit.dotnetdevkit.blocks.controls.AbstractBuilder;",
-                "import " + classImport + ";")
+        CodeBuilder objectParameters = CodeBuilder.quickBuilt(
+                parameters.stream().map(this::mapObjectParamsToJson).collect(Collectors.toList())
         );
 
-        var contains = importsBuilder.getCodeLines().indexOf("import T;");
-        if (contains != -1) {
-            importsBuilder.getCodeLines().remove(contains);
-        }
+        code.append("\tpublic static Map<String, Object> jsonInput() {")
+                .append("\t\tMap<String, Object> mappings = new LinkedHashMap<>();")
+                .emptyLine()
+                .append(objectParameters.generate())
+                .emptyLine()
+                .append("\t\treturn mappings;")
+                .append("\t}")
+                .emptyLine();
 
-        builder.add(1, importsBuilder.getCodeLines());
+        return code;
+    }
+
+    private String mapObjectParamsToJson(VariableElement parameter) {
+        String classNameToCheck = parameter.asType().toString();
+        TypeElement classTypeElement = processingEnvironment.getElementUtils().getTypeElement(classNameToCheck);
+
+        try {
+            if (classTypeElement.getSuperclass().toString().equals(ABSTRACT_BLOCK_SUPERCLASS)) {
+                String className = getSimpleTypeNameWithGenerics(parameter.asType());
+                addClassImports(String.format("%s%s", className, BUILDER_IMPL_NAME), String.format("%s.%s%s", BUILDER_PACKAGE_NAME, className, BUILDER_IMPL_NAME), Type.BUILDER);
+                return "\t\tmappings.put(\"" + getSimpleTypeNameWithGenerics(parameter.asType()) + "\", " + getSimpleTypeNameWithGenerics(parameter.asType()) + "Builder.jsonInput());";
+            } else {
+                return "\t\tmappings.put(\"" + getSimpleTypeNameWithGenerics(parameter.asType()) + "\", \"" + parameter.getSimpleName() + "\");";
+            }
+        } catch (Exception ex) {
+            return "\t\tmappings.put(\"" + getSimpleTypeNameWithGenerics(parameter.asType()) + "\", \"" + parameter.getSimpleName() + "\");";
+        }
     }
 }

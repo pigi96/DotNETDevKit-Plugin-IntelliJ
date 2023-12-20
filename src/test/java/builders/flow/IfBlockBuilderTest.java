@@ -1,8 +1,10 @@
 package builders.flow;
 
+import com.olvins.kit.IfBlockBuilder;
+import com.olvins.kit.IfDecisionBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfDecisionBlock;
 import org.junit.jupiter.api.Test;
 import utils.BlockTestUtils;
 import utils.JustUtils;
@@ -20,12 +22,11 @@ public class IfBlockBuilderTest {
 
         String expectedResult = String.format(SyntaxConstants.IF_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
-        IfBlock ifBlock = IfBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+        IfDecisionBlock ifDecisionBlock = IfDecisionBlockBuilder.start()
+                .blocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, ifBlock.generate());
+        assertEquals(expectedResult, ifDecisionBlock.generate());
     }
 
     @Test
@@ -35,11 +36,10 @@ public class IfBlockBuilderTest {
 
         String expectedResult = String.format(SyntaxConstants.IF_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
-        IfBlock ifBlock = IfBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+        IfDecisionBlock ifDecisionBlock = IfDecisionBlockBuilder.start()
+                .blocks(blocks)
                 .build();
 
-        assertEquals(expectedResult, ifBlock.generate());
+        assertEquals(expectedResult, ifDecisionBlock.generate());
     }
 }

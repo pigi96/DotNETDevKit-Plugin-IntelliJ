@@ -1,5 +1,6 @@
 package builders.declarations;
 
+import com.olvins.kit.InitializationBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.InitializationBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class InitializationBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.VALID_INT_INITIALIZATION);
 
         InitializationBlock initializationBlock = InitializationBlockBuilder.start()
-                .withValue(SyntaxConstants.VALID_INT_INITIALIZATION)
+                .initialization(SyntaxConstants.VALID_INT_INITIALIZATION)
                 .build();
 
         assertEquals(String.format(INITIALIZATION_VALID, SyntaxConstants.VALID_INT_INITIALIZATION), expectedResult, initializationBlock.generate());
@@ -27,7 +28,7 @@ public class InitializationBlockBuilderTest {
     public void buildInitializationBlock_InvalidInput_ThrowsException() {
         Exception exception = assertThrows(ExpressionException.class, () -> {
             InitializationBlock initializationBlock = InitializationBlockBuilder.start()
-                    .withValue(SyntaxConstants.INVALID_INT_INITIALIZATION)
+                    .initialization(SyntaxConstants.INVALID_INT_INITIALIZATION)
                     .build();
 
             initializationBlock.generate();

@@ -1,5 +1,6 @@
 package builders.declarations;
 
+import com.olvins.kit.StatementBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.StatementBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class StatementBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.VALID_STRING_DECLARATION);
 
         StatementBlock statementBlock = StatementBlockBuilder.start()
-                .withValue(SyntaxConstants.VALID_STRING_DECLARATION)
+                .condition(SyntaxConstants.VALID_STRING_DECLARATION)
                 .build();
 
         assertEquals(String.format(STATEMENT_VALID, SyntaxConstants.VALID_STRING_DECLARATION), expectedResult, statementBlock.generate());
@@ -27,7 +28,7 @@ public class StatementBlockBuilderTest {
     public void buildStatementBlock_InvalidInput_ThrowsException() {
         Exception exception = assertThrows(ExpressionException.class, () -> {
             StatementBlock statementBlock = StatementBlockBuilder.start()
-                    .withValue(SyntaxConstants.INVALID_DECLARATION_1)
+                    .condition(SyntaxConstants.INVALID_DECLARATION_1)
                     .build();
 
             statementBlock.generate();

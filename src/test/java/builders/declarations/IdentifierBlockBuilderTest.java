@@ -1,5 +1,6 @@
 package builders.declarations;
 
+import com.olvins.kit.IdentifierBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.IdentifierBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class IdentifierBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.VALID_IDENTIFIER);
 
         IdentifierBlock identifierBlock = IdentifierBlockBuilder.start()
-                .withValue(SyntaxConstants.VALID_IDENTIFIER)
+                .identifier(SyntaxConstants.VALID_IDENTIFIER)
                 .build();
 
         assertEquals(String.format(IDENTIFIER_VALID, SyntaxConstants.VALID_IDENTIFIER), expectedResult, identifierBlock.getGeneratedFormattedCode());
@@ -27,7 +28,7 @@ public class IdentifierBlockBuilderTest {
     public void buildIdentifierBlock_InvalidInput_ThrowsException() {
         Exception exception = assertThrows(ExpressionException.class, () -> {
             IdentifierBlock identifierBlock = IdentifierBlockBuilder.start()
-                    .withValue(SyntaxConstants.INVALID_IDENTIFIER)
+                    .identifier(SyntaxConstants.INVALID_IDENTIFIER)
                     .build();
 
             identifierBlock.getGeneratedFormattedCode();

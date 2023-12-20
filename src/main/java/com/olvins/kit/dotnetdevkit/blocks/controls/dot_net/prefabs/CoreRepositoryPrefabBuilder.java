@@ -3,9 +3,8 @@ package com.olvins.kit.dotnetdevkit.blocks.controls.dot_net.prefabs;
 import com.olvins.kit.ClassBlockBuilder;
 import com.olvins.kit.StatementBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
-import com.olvins.kit.dotnetdevkit.blocks.controls.Prebuilt;
+import com.olvins.kit.dotnetdevkit.blocks.controls.RepositoryBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Prefab;
-import com.olvins.kit.dotnetdevkit.blocks.controls.components.FunctionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.IdentifierBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.MemberModifierBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.MemberTypeBlock;
@@ -38,7 +37,7 @@ public class CoreRepositoryPrefabBuilder extends Prefab<List<Block>> {
         List<Block> logic = new ArrayList<>();
         logic.add(StatementBlockBuilder.create("return await query.FirstOrDefaultAsync();"));
 
-        Block block = Prebuilt.repositoryAsyncFunction(
+        Block block = RepositoryBuilder.repositoryAsyncFunction(
                 null,
                 "GetById",
                 Arrays.asList(new Pair<>("Expression<Func<TEntity, bool>>[]", "predicates")),

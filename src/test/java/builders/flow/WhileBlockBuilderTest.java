@@ -1,5 +1,6 @@
 package builders.flow;
 
+import com.olvins.kit.WhileBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.WhileBlock;
@@ -21,8 +22,8 @@ public class WhileBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
         WhileBlock whileBlock = WhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, whileBlock.generate());
@@ -36,8 +37,8 @@ public class WhileBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.WHILE_BLOCK, conditionBlock.generate(), JustUtils.collectBlocks(blocks));
 
         WhileBlock whileBlock = WhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, whileBlock.generate());

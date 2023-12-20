@@ -3,12 +3,14 @@ package com.olvins.kit.dotnetdevkit.blocks.controls;
 import com.olvins.kit.dotnetdevkit.errors.ConditionalException;
 import com.olvins.kit.dotnetdevkit.types.BlockType;
 import com.olvins.kit.dotnetdevkit.types.FormatStyle;
+import com.olvins.kit.dotnetdevkit.utils.BaseListBlock;
 import com.olvins.kit.dotnetdevkit.utils.Formatters;
 import com.olvins.kit.dotnetdevkit.utils.IFormatter;
 import com.olvins.kit.dotnetdevkit.utils.IValidator;
 import com.olvins.kit.dotnetdevkit.utils.ListBlock;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
  * Main code class that is contained as coding block, used for generation of code,
  * deep stacking code, and TBD
  */
-public abstract class Block {
+public abstract class Block implements IBlock {
     protected String template;
     protected String generatedCode;
     protected HashMap<String, Object> index;
@@ -39,12 +41,8 @@ public abstract class Block {
         for (Map.Entry<String, Object> entry : index.entrySet()) {
             String placeholder = entry.getKey();
             Object value = entry.getValue();
-            if (value instanceof ListBlock) {
-                ListBlock list = (ListBlock) value;
-                String innerBlocks = list.getList().stream()
-                        .map(Block::getGeneratedCode)
-                        .collect(Collectors.joining(list.getSeparator()));
-                generatedCode = generatedCode.replace(placeholder, innerBlocks);
+            if (value instanceof BaseListBlock) {
+                generatedCode = generatedCode.replace(placeholder, ((BaseListBlock) value).getCode());
             } else if (value instanceof Block) {
                 Block block = (Block) value;
                 generatedCode = generatedCode.replace(placeholder, block.generate());
@@ -84,8 +82,8 @@ public abstract class Block {
         index = new HashMap<>();
 
         for (Object block : objects) {
-            if (block instanceof ListBlock) {
-                ListBlock innerBlocks = (ListBlock) block;
+            if (block instanceof BaseListBlock) {
+                BaseListBlock innerBlocks = (BaseListBlock) block;
                 index.put(innerBlocks.getBlockType().getValue(), innerBlocks);
             } else if (block instanceof Block) {
                 Block blockBlock = (Block) block;
@@ -95,6 +93,14 @@ public abstract class Block {
                 index.put(BlockType.STRING_BLOCK.getValue(), stringBlock);
             }
         }
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public Map<String, Object> getTemplate() {
+        return this.index;
     }
 
     public void formatCode() {

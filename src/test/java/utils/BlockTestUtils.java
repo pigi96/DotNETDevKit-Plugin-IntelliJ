@@ -6,7 +6,7 @@ import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.InitializationBl
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.IterationBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.DoWhileBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.ForBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfDecisionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.WhileBlock;
 import com.olvins.kit.dotnetdevkit.types.BlockType;
 
@@ -57,11 +57,11 @@ public class BlockTestUtils {
         return iterationBlock;
     }
 
-    public static IfBlock mockIfBlock(String value) {
-        IfBlock ifBlock = mock(IfBlock.class);
-        when(ifBlock.generate()).thenReturn(value);
-        when(ifBlock.getBlockType()).thenReturn(BlockType.IF_BLOCK);
-        return ifBlock;
+    public static IfDecisionBlock mockIfBlock(String value) {
+        IfDecisionBlock ifDecisionBlock = mock(IfDecisionBlock.class);
+        when(ifDecisionBlock.generate()).thenReturn(value);
+        when(ifDecisionBlock.getBlockType()).thenReturn(BlockType.IF_BLOCK);
+        return ifDecisionBlock;
     }
 
     public static ForBlock mockForBlock(String value) {

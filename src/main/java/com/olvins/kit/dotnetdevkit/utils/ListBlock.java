@@ -5,33 +5,21 @@ import com.olvins.kit.dotnetdevkit.types.BlockType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class ListBlock {
-    private List<? extends Block> blocks;
-    private String separator;
-    private BlockType blockType;
-
+public class ListBlock extends BaseListBlock {
     public ListBlock(String separator, BlockType blockType, List<? extends Block> blocks) {
-        this.blocks = blocks;
-        this.separator = separator;
-        this.blockType = blockType;
+        super(separator, blockType, blocks);
     }
 
     public ListBlock(String separator, BlockType blockType, Block... blocks) {
-        this.blocks = Arrays.asList(blocks);
-        this.separator = separator;
-        this.blockType = blockType;
+        super(separator, blockType, blocks);
     }
 
-    public List<? extends Block> getList() {
-        return blocks;
-    }
-
-    public String getSeparator() {
-        return separator;
-    }
-
-    public BlockType getBlockType() {
-        return blockType;
+    @Override
+    public String getCode() {
+        return blocks.stream()
+                .map(Block::getGeneratedCode)
+                .collect(Collectors.joining(separator));
     }
 }

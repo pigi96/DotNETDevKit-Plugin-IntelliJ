@@ -19,7 +19,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
     testImplementation("org.junit.platform:junit-platform-launcher:1.10.0")
     testImplementation("org.mockito:mockito-core:5.6.0")
-    testImplementation("org.apache.velocity:velocity:1.8")
     implementation("org.antlr:antlr4:4.13.1")
 }
 

@@ -1,5 +1,6 @@
 package builders.declarations;
 
+import com.olvins.kit.ConditionBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class ConditionBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.VALID_CONDITION);
 
         ConditionBlock conditionBlock = ConditionBlockBuilder.start()
-                .withValue(SyntaxConstants.VALID_CONDITION)
+                .condition(SyntaxConstants.VALID_CONDITION)
                 .build();
 
         assertEquals(String.format(CONDITION_VALID, SyntaxConstants.VALID_CONDITION), expectedResult, conditionBlock.generate());
@@ -27,7 +28,7 @@ public class ConditionBlockBuilderTest {
     public void buildConditionBlock_InvalidInput_ThrowsException() {
         Exception exception = assertThrows(ExpressionException.class, () -> {
             ConditionBlock conditionBlock = ConditionBlockBuilder.start()
-                    .withValue(SyntaxConstants.INVALID_CONDITION)
+                    .condition(SyntaxConstants.INVALID_CONDITION)
                     .build();
 
             conditionBlock.generate();

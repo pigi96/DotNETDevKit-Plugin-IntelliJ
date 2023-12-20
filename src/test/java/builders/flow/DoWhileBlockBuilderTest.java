@@ -1,5 +1,6 @@
 package builders.flow;
 
+import com.olvins.kit.DoWhileBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.DoWhileBlock;
@@ -21,8 +22,8 @@ public class DoWhileBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.DO_WHILE_BLOCK, JustUtils.collectBlocks(blocks), conditionBlock.generate());
 
         DoWhileBlock doWhileBlock = DoWhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, doWhileBlock.generate());
@@ -36,8 +37,8 @@ public class DoWhileBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.DO_WHILE_BLOCK, JustUtils.collectBlocks(blocks), conditionBlock.generate());
 
         DoWhileBlock doWhileBlock = DoWhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, doWhileBlock.generate());

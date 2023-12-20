@@ -1,5 +1,6 @@
 package builders.declarations;
 
+import com.olvins.kit.MemberTypeBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.MemberTypeBlock;
 import com.olvins.kit.dotnetdevkit.errors.ExpressionException;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class MemberTypeBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.VALID_MEMBER_TYPE);
 
         MemberTypeBlock memberTypeBlock = MemberTypeBlockBuilder.start()
-                .withValue(SyntaxConstants.VALID_MEMBER_TYPE)
+                .classType(SyntaxConstants.VALID_MEMBER_TYPE)
                 .build();
 
         assertEquals(String.format(MEMBER_TYPE_VALID, SyntaxConstants.VALID_MEMBER_TYPE), expectedResult, memberTypeBlock.getGeneratedFormattedCode());
@@ -27,7 +28,7 @@ public class MemberTypeBlockBuilderTest {
     public void buildMemberTypeBlock_InvalidInput_ThrowsException() {
         Exception exception = assertThrows(ExpressionException.class, () -> {
             MemberTypeBlock memberModifierBlock = MemberTypeBlockBuilder.start()
-                    .withValue(SyntaxConstants.INVALID_MEMBER_TYPE)
+                    .classType(SyntaxConstants.INVALID_MEMBER_TYPE)
                     .build();
 
             memberModifierBlock.getGeneratedFormattedCode();

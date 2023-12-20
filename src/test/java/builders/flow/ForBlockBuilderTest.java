@@ -1,5 +1,6 @@
 package builders.flow;
 
+import com.olvins.kit.ForBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ConditionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.InitializationBlock;
@@ -25,10 +26,10 @@ public class ForBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.generate(), conditionBlock.generate(), iterationBlock.generate(), JustUtils.collectBlocks(blocks));
 
         ForBlock forBlock = ForBlockBuilder.start()
-                .withInitialization(initializationBlock)
-                .withCondition(conditionBlock)
-                .withIteration(iterationBlock)
-                .withBlocks(blocks)
+                .initializationBlock(initializationBlock)
+                .conditionBlock(conditionBlock)
+                .iterationBlock(iterationBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, forBlock.getGeneratedFormattedCode());
@@ -44,10 +45,10 @@ public class ForBlockBuilderTest {
         String expectedResult = String.format(SyntaxConstants.FOR_BLOCK, initializationBlock.generate(), conditionBlock.generate(), iterationBlock.generate(), JustUtils.collectBlocks(blocks));
 
         ForBlock forBlock = ForBlockBuilder.start()
-                .withInitialization(initializationBlock)
-                .withCondition(conditionBlock)
-                .withIteration(iterationBlock)
-                .withBlocks(blocks)
+                .initializationBlock(initializationBlock)
+                .conditionBlock(conditionBlock)
+                .iterationBlock(iterationBlock)
+                .blocks(blocks)
                 .build();
 
         assertEquals(expectedResult, forBlock.generate());

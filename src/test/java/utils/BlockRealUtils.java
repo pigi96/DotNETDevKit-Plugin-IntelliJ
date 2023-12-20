@@ -1,5 +1,21 @@
 package utils;
 
+import com.olvins.kit.ClassBlockBuilder;
+import com.olvins.kit.ConditionBlockBuilder;
+import com.olvins.kit.DoWhileBlockBuilder;
+import com.olvins.kit.ForBlockBuilder;
+import com.olvins.kit.FunctionBlockBuilder;
+import com.olvins.kit.IdentifierBlockBuilder;
+import com.olvins.kit.IfBlockBuilder;
+import com.olvins.kit.IfDecisionBlockBuilder;
+import com.olvins.kit.InitializationBlockBuilder;
+import com.olvins.kit.IterationBlockBuilder;
+import com.olvins.kit.MemberModifierBlockBuilder;
+import com.olvins.kit.MemberTypeBlockBuilder;
+import com.olvins.kit.ObjectTypeBlockBuilder;
+import com.olvins.kit.ParameterBlockBuilder;
+import com.olvins.kit.StatementBlockBuilder;
+import com.olvins.kit.WhileBlockBuilder;
 import com.olvins.kit.dotnetdevkit.blocks.controls.Block;
 import com.olvins.kit.dotnetdevkit.blocks.controls.components.ClassBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.components.FunctionBlock;
@@ -14,7 +30,7 @@ import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.ObjectTypeBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.declarations.StatementBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.DoWhileBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.ForBlock;
-import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfBlock;
+import com.olvins.kit.dotnetdevkit.blocks.controls.flow.IfDecisionBlock;
 import com.olvins.kit.dotnetdevkit.blocks.controls.flow.WhileBlock;
 
 import java.util.Arrays;
@@ -31,7 +47,7 @@ public class BlockRealUtils {
 
     public static ConditionBlock conditionBlock(String condition) {
         return ConditionBlockBuilder.start()
-                .withValue(condition)
+                .condition(condition)
                 .build();
     }
 
@@ -45,7 +61,7 @@ public class BlockRealUtils {
 
     public static InitializationBlock initializationBlock(String initialization) {
         return InitializationBlockBuilder.start()
-                .withValue(initialization)
+                .initialization(initialization)
                 .build();
     }
 
@@ -59,7 +75,7 @@ public class BlockRealUtils {
 
     public static IterationBlock iterationBlock(String iteration) {
         return IterationBlockBuilder.start()
-                .withValue(iteration)
+                .initialization(iteration)
                 .build();
     }
 
@@ -73,7 +89,7 @@ public class BlockRealUtils {
 
     public static IdentifierBlock identifierBlock(String identifier) {
         return IdentifierBlockBuilder.start()
-                .withValue(identifier)
+                .identifier(identifier)
                 .build();
     }
 
@@ -87,22 +103,21 @@ public class BlockRealUtils {
 
     public static StatementBlock statementBlock(String statement) {
         return StatementBlockBuilder.start()
-                .withValue(statement)
+                .condition(statement)
                 .build();
     }
 
-    public static IfBlock validDefaultIfBlock() {
+    public static IfDecisionBlock validDefaultIfBlock() {
         return ifBlock(validDefaultConditionBlock(), Arrays.asList(validDefaultStatementBlock()));
     }
 
-    public static IfBlock invalidDefaultIfBlock() {
+    public static IfDecisionBlock invalidDefaultIfBlock() {
         return ifBlock(validDefaultConditionBlock(), Arrays.asList(invalidDefaultStatementBlock()));
     }
 
-    public static IfBlock ifBlock(ConditionBlock conditionBlock, List<Block> blocks) {
-        return IfBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+    public static IfDecisionBlock ifBlock(ConditionBlock conditionBlock, List<Block> blocks) {
+        return IfDecisionBlockBuilder.start()
+                .blocks(blocks)
                 .build();
     }
 
@@ -116,10 +131,10 @@ public class BlockRealUtils {
 
     public static ForBlock forBlock(InitializationBlock initializationBlock, ConditionBlock conditionBlock, IterationBlock iterationBlock, List<Block> blocks) {
         return ForBlockBuilder.start()
-                .withInitialization(initializationBlock)
-                .withCondition(conditionBlock)
-                .withIteration(iterationBlock)
-                .withBlocks(blocks)
+                .initializationBlock(initializationBlock)
+                .conditionBlock(conditionBlock)
+                .iterationBlock(iterationBlock)
+                .blocks(blocks)
                 .build();
     }
 
@@ -133,8 +148,8 @@ public class BlockRealUtils {
 
     public static WhileBlock whileBlock(ConditionBlock conditionBlock, List<Block> blocks) {
         return WhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
     }
 
@@ -148,8 +163,8 @@ public class BlockRealUtils {
 
     public static DoWhileBlock doWhileBlock(ConditionBlock conditionBlock, List<Block> blocks) {
         return DoWhileBlockBuilder.start()
-                .withCondition(conditionBlock)
-                .withBlocks(blocks)
+                .conditionBlock(conditionBlock)
+                .blocks(blocks)
                 .build();
     }
 
@@ -163,7 +178,7 @@ public class BlockRealUtils {
 
     public static MemberModifierBlock memberModifierBlock(String memberModifier) {
         return MemberModifierBlockBuilder.start()
-                .withValue(memberModifier)
+                .classModifier(memberModifier)
                 .build();
     }
 
@@ -177,7 +192,7 @@ public class BlockRealUtils {
 
     public static MemberTypeBlock memberTypeBlock(String memberType) {
         return MemberTypeBlockBuilder.start()
-                .withValue(memberType)
+                .classType(memberType)
                 .build();
     }
 
@@ -191,10 +206,10 @@ public class BlockRealUtils {
 
     public static ClassBlock classBlock(MemberModifierBlock memberModifierBlock, MemberTypeBlock memberTypeBlock, IdentifierBlock identifierBlock, List<Block> blocks) {
         return ClassBlockBuilder.start()
-                .withMemberModifier(memberModifierBlock)
-                .withMemberType(memberTypeBlock)
-                .withIdentifier(identifierBlock)
-                .withBlocks(blocks)
+                .memberModifierBlock(memberModifierBlock)
+                .memberTypeBlock(memberTypeBlock)
+                .identifierBlock(identifierBlock)
+                .blocks(blocks)
                 .build();
     }
 
@@ -208,11 +223,11 @@ public class BlockRealUtils {
 
     public static FunctionBlock functionBlock(MemberModifierBlock memberModifierBlock, ObjectTypeBlock objectTypeBlock, IdentifierBlock identifierBlock, List<ParameterBlock> parameterBlocks, List<Block> blocks) {
         return FunctionBlockBuilder.start()
-                .withMemberModifier(memberModifierBlock)
-                .withObjectType(objectTypeBlock)
-                .withIdentifier(identifierBlock)
-                .withParameters(parameterBlocks)
-                .withBlocks(blocks)
+                .memberModifierBlock(memberModifierBlock)
+                .objectTypeBlock(objectTypeBlock)
+                .identifierBlock(identifierBlock)
+                .parameterBlocks(parameterBlocks)
+                .blocks(blocks)
                 .build();
     }
 
@@ -226,8 +241,8 @@ public class BlockRealUtils {
 
     public static ParameterBlock parameterBlock(ObjectTypeBlock objectTypeBlock, IdentifierBlock identifierBlock) {
         return ParameterBlockBuilder.start()
-                .withObjectTypeBlock(objectTypeBlock)
-                .withIdentifierBlock(identifierBlock)
+                .objectTypeBlock(objectTypeBlock)
+                .identifierBlock(identifierBlock)
                 .build();
     }
 
@@ -241,7 +256,7 @@ public class BlockRealUtils {
 
     public static ObjectTypeBlock objectTypeBlock(String objectType) {
         return ObjectTypeBlockBuilder.start()
-                .withValue(objectType)
+                .objectType(objectType)
                 .build();
     }
 }

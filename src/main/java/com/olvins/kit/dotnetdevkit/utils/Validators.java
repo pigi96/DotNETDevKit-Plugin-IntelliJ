@@ -67,6 +67,13 @@ public class Validators {
         }
     }
 
+    public static class IfDecisionBlockValidator implements IValidator {
+        @Override
+        public void validate(String ifDecision) {
+            parser(ifDecision).if_body();
+        }
+    }
+
     private static CSharpParser parser(String expression) {
         CharStream charStream = CharStreams.fromString(expression);
 

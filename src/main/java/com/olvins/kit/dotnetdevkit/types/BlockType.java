@@ -11,7 +11,10 @@ public class BlockType extends ValueBase {
     public static final BlockType SWITCH_BLOCK = new BlockType("{SWITCH_BLOCK}");
     public static final BlockType DECLARATION_BLOCK = new BlockType("{DECLARATION_BLOCK}");
     public static final BlockType IDENTIFIER_BLOCK = new BlockType("{IDENTIFIER_BLOCK}");
+    public static final BlockType IF_DECISION_BLOCK = new BlockType("{IF_DECISION_BLOCK}");
     public static final BlockType IF_BLOCK = new BlockType("{IF_BLOCK}");
+    public static final BlockType ELSE_IF_BLOCK = new BlockType("{ELSE_IF_BLOCK}");
+    public static final BlockType ELSE_BLOCK = new BlockType("{ELSE_BLOCK}");
     public static final BlockType FOR_BLOCK = new BlockType("{FOR_BLOCK}");
     public static final BlockType FOR_EACH_BLOCK = new BlockType("{FOR_EACH_BLOCK}");
     public static final BlockType WHILE_BLOCK = new BlockType("{WHILE_BLOCK}");

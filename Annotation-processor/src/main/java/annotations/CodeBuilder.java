@@ -21,6 +21,16 @@ public class CodeBuilder {
         return this;
     }
 
+    public CodeBuilder append(String format, Object... args) {
+        codeLines.add(String.format(format, args));
+        return this;
+    }
+
+    public CodeBuilder append(CodeBuilder codeBuilder) {
+        this.codeLines.addAll(codeBuilder.codeLines);
+        return this;
+    }
+
     public CodeBuilder emptyLine() {
         codeLines.add("");
         return this;
@@ -28,6 +38,10 @@ public class CodeBuilder {
 
     public void add(int location, List<String> values) {
         codeLines.addAll(location, values);
+    }
+
+    public void add(int location, CodeBuilder codeBuilder) {
+        codeLines.addAll(location, codeBuilder.codeLines);
     }
 
     public String generate() {
